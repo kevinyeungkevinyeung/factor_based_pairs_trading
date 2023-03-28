@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# custom data files
+ff_factors/**/*.csv
+raw_data/**/*.csv

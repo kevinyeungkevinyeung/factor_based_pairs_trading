@@ -142,7 +142,7 @@ class FactorData:
 
     def get_factor_data(self):
 
-        factor_data = pd.read_csv(self.file_path, index_col=0)
+        factor_data = pd.read_csv(self.file_path, index_col=0,low_memory=False)
 
         factor_data.index = pd.to_datetime(factor_data.index, format="%Y-%m-%d")
 

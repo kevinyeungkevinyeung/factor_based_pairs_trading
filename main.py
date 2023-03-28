@@ -8,8 +8,7 @@
 import pandas as pd
 from factor_data import FactorData
 
-data = FactorData("all",frequency="d",start="2018-01-01",end="2020-01-01")
+data = FactorData("three_factor",frequency="m")
 
 print("done")
 
-data.data
