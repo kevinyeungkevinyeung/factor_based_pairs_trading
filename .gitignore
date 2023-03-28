@@ -141,3 +141,33 @@ Thumbs.db
 # custom data files
 ff_factors/**/*.csv
 raw_data/**/*.csv
+
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# custom data files
+ff_factors/**/*.csv
+raw_data/**/*.csv
+
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# custom data files
+ff_factors/**/*.csv
+raw_data/**/*.csv
