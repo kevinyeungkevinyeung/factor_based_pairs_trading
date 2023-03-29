@@ -142,3 +142,5 @@ Thumbs.db
 ff_factors/**/*.csv
 raw_data/**/*.csv
 
+# cred
+settings.py
