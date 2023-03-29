@@ -141,3 +141,6 @@ Thumbs.db
 # custom data files
 ff_factors/**/*.csv
 raw_data/**/*.csv
+
+# cred
+settings.py

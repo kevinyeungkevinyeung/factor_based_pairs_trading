@@ -1,5 +1,4 @@
 import pandas as pd
-import getFamaFrenchFactors as gff
 from os.path import exists
 from datetime import datetime
 import zipfile
@@ -12,11 +11,6 @@ import glob
 class FactorData:
 
     DATA_DIR = "ff_factors/"
-
-    DATE_DICT = {
-                "m":"monthly",
-                "a":"annual"
-    }
 
     INFO_DICT = {
                 "three_factor":{
