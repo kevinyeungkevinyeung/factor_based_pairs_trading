@@ -7,7 +7,15 @@
 
 import pandas as pd
 from factor_data import FactorData
+from price_data import PriceData
 
-data = FactorData("all",frequency="d",start="2018-01-01",end="2020-01-01")
+# data = FactorData("three_factor",frequency="m")
 
-print("done")
+aapl = PriceData("AAPL")
+
+aapl.get_stock_price()
+
+df_price = aapl.df.copy()
+
+
+
