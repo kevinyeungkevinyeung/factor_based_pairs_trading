@@ -11,11 +11,12 @@ from price_data import PriceData
 
 # data = FactorData("three_factor",frequency="m")
 
-aapl = PriceData("AAPL")
+price = PriceData(["AAPL","MSFT"],start="2017-01-01",end="2021-01-01",refresh=False)
 
-aapl.get_stock_price()
+price.get_price_data()
 
-df_price = aapl.df.copy()
+print(price.price)
+
 
 
 
