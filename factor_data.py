@@ -115,8 +115,6 @@ class FactorData:
 
             self.file_path = self.DATA_DIR + "//"+ self.data_dict["store_dir"] + "//" + self.data_dict["file_name"]
 
-
-
             # check if the data exist or not, download the data if the data doesn't exist
             if not exists(self.file_path):
                 print("Factor Data doesn't exist, Downloading from the internet.")
@@ -140,7 +138,6 @@ class FactorData:
 
         factor_data.index = pd.to_datetime(factor_data.index, format="%Y-%m-%d")
 
-
         if self.start is not None:
             factor_data = factor_data.loc[factor_data.index>=self.start]
         if self.end is not None:
@@ -156,10 +153,10 @@ class FactorData:
         for key in file_list:
 
             file_path = self.DATA_DIR + "/" + self.data_dict[key][self.frequency]["store_dir"] + "/" + self.data_dict[key][self.frequency]["file_name"]
+
             df_data = pd.read_csv(file_path,index_col=0)
             df_data.index = pd.to_datetime(df_data.index,format='%Y-%m-%d')
             list_of_df.append(df_data)
-            print(df_data.head())
 
         _data = pd.concat(list_of_df,axis=1)
 
@@ -168,7 +165,13 @@ class FactorData:
         if self.end is not None:
             _data = _data.loc[_data.index<=self.end]
 
-        self.data = _data
+
+        if self.frequency=='m':
+            _data.index = _data.index.strftime('%Y-%m')
+        self.factor_data = _data.apply(pd.to_numeric, 
+                            errors='coerce') \
+                     .div(100)
+
 
         print("Concatenated all factor dataframe")
     
