@@ -2,12 +2,15 @@ from matplotlib import pyplot as plt
 
 class Cluster:
 
-    def __init__(self, pca_data, method="GMM", number_of_cluster=None, graph=True):
+    def __init__(self, pca_data, method="GMM", number_of_cluster=None, cluster_floor=5,graph=True):
 
         self.method = method
         self.pca_data = pca_data
         self.graph = graph
+        self.cluster_floor = cluster_floor
+
         self.number_of_cluster = self.get_gmm_optimal_k() if number_of_cluster==None else number_of_cluster
+        
 
         self.run_gmm_clustering()
 
@@ -21,7 +24,6 @@ class Cluster:
 
         if self.graph:
             from mpl_toolkits import mplot3d
-            # %matplotlib notebook
 
             fig = plt.figure(figsize=(10,10))
             ax = plt.axes(projection='3d')
@@ -39,7 +41,6 @@ class Cluster:
         sum_of_squared_distances = []
 
         data = self.pca_data[[col for col in self.pca_data.columns if 'PC' in col]]
-
 
 
         cluster_cap  = int(np.sqrt(len(self.pca_data))) ## the maximum amount of cluster is the sqrt of the sample size
@@ -65,7 +66,6 @@ class Cluster:
         else:
             optimal_k = 10    
             
-            
         plt.plot(K,sum_of_squared_distances,'bx-')
         plt.xlabel('Values of K') 
         plt.ylabel('Sum of squared distances/Inertia') 
@@ -74,4 +74,4 @@ class Cluster:
         plt.show()
         plt.close()
 
-        return optimal_k
+        return self.cluster_floor if optimal_k<self.cluster_floor else optimal_k

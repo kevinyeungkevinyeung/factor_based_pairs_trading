@@ -7,7 +7,7 @@ class FactorModel:
         self._returns = df_return.copy()
         self.factors = df_factors.copy()
         self.ts_pvalues_threshold = ts_pvalues_threshold # all the regression ceoficients with higher pvalues than this parameter will be convert to 0
-        self.coff_std_limit = 4 # all regress cofficients that are beyond (mean - coff_std_limt) or beyond (mean + coff_std_limit) will be set to the limit
+        self.coff_std_limit = coff_std_limit # all regress cofficients that are beyond (mean - coff_std_limt) or beyond (mean + coff_std_limit) will be set to the limit
         self.factor_hard_cap = factor_hard_cap
 
         # loop thru all the ticker and get the ts regression coefficient for each ticker

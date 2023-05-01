@@ -40,8 +40,8 @@ class PCA:
 
         self.pca = df_pca
 
-        if display:
-            print("""
-Cumulative sum of proportion of variance""")
-            df_display = pd.DataFrame(self.cum_explain,index=["PC"+str(num) for num in range(len(self.cum_explain))]).T
-            display(df_display)
+#         if display:
+#             print("""
+# Cumulative sum of proportion of variance""")
+#             df_display = pd.DataFrame(self.cum_explain,index=["PC"+str(num) for num in range(len(self.cum_explain))]).T
+#             display(df_display)

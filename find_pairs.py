@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class PairsTrade:
 
-    def __init__(self,model_data, clustering, price_data, lookback_data, test_percentile=0.5, display=False):
+    def __init__(self, model_data, clustering, price_data, lookback_data, allocation_date, entry_zscore=2, stop_loss_zscore=3,test_percentile=0.25, display=False):
 
         self.display = display
 
@@ -14,6 +14,11 @@ class PairsTrade:
         self.model_data = model_data
         self.price_data = price_data
         self.clustering = clustering
+
+        self.entry_zscore = entry_zscore
+        self.stop_loss_zscore = stop_loss_zscore
+
+        self.allocation_date = allocation_date
 
         self.price = price_data.price.copy()
         self.price_lb = lookback_data.price.copy()
@@ -44,7 +49,6 @@ class PairsTrade:
 
         df_count = self.factors[['cluster',"lookback_return"]].groupby('cluster',as_index=False).count()
 
-        display(df_count)
 
         num_of_ticker_dict = dict(zip(df_count.cluster,df_count.lookback_return))
 
@@ -80,16 +84,17 @@ class PairsTrade:
 
                         adf = adfuller(spread, maxlag=1)
 
+
                         stationary = True if adf[1] <0.05 else False
 
                         mean = spread.mean()
                         std = spread.std()
 
-                        entry_point_lower = mean - std*2
-                        entry_point_upper = mean + std*2
+                        entry_point_lower = mean - std * self.entry_zscore
+                        entry_point_upper = mean + std * self.entry_zscore
 
-                        stop_lost_lower = mean - std*3
-                        stop_lost_upper = mean + std*3
+                        stop_lost_lower = mean - std * self.stop_loss_zscore
+                        stop_lost_upper = mean + std * self.stop_loss_zscore
 
 
                         spread = spread.to_frame()
@@ -130,22 +135,48 @@ class PairsTrade:
                             plt.show()
 
                         data_list.append({
+                                            "date":self.allocation_date,
                                             "long":l,
                                             "short":s,
-                                            "hedge_ratio":model.params[0],
+                                            "hedge_ratio":model.params[0], # spread = y - (hedge_ratio * x)
                                             "is_contin":stationary,
                                             'adf_p_values':adf[1],
                                             "long_lb_return":self.lookback_return_dict[l],
                                             "short_lb_return":self.lookback_return_dict[s],
                                             "latest_zscore":latest_zscore,
-                                            "cluster":cluster
+                                            "cluster":cluster,
+                                            "long_entry":entry_point_upper,
+                                            "short_entry":entry_point_lower,
+                                            "long_stop_loss":stop_lost_upper,
+                                            "short_stop_loss":stop_lost_lower,
+                                            "mean":mean,
+                                            "std":std
 
                         })
                     except:
                         pass
 
-        df_contin = pd.DataFrame(data_list,columns=["long","short","hedge_ratio","is_contin","adf_p_values","long_lb_return","short_lb_return","latest_zscore","cluster"]) 
+        df_contin = pd.DataFrame(data_list,columns=[
+                                                "date",
+                                                "long",
+                                                "short",
+                                                "hedge_ratio",
+                                                "is_contin",
+                                                "adf_p_values",
+                                                "long_lb_return",
+                                                "short_lb_return",
+                                                "latest_zscore",
+                                                "long_entry",
+                                                "short_entry",
+                                                "long_stop_loss",
+                                                "short_stop_loss",
+                                                "cluster",
+                                                "mean",
+                                                "std"
+                                                ]
+                                                ) 
 
+        
 
         condition = (df_contin["is_contin"]==True)#&((df_contin["latest_zscore"]>-3)&(df_contin["latest_zscore"]<3))&((df_contin["latest_zscore"]>2)|(df_contin["latest_zscore"]<-2))
         self.pairs = df_contin.loc[condition] ## only enter to trades that have extreme zscore
