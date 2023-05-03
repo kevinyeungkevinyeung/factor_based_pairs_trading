@@ -173,7 +173,7 @@ class FactorData:
                      .div(100)
 
 
-        print("Concatenated all factor dataframe")
+        #print("Concatenated all factor dataframe")
     
 
 

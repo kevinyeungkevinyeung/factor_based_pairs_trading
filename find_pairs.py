@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class PairsTrade:
 
-    def __init__(self, model_data, clustering, price_data, lookback_data, allocation_date, entry_zscore=2, stop_loss_zscore=3,test_percentile=0.25, display=False):
+    def __init__(self, model_data, clustering, price_data, lookback_data, allocation_date, entry_zscore=2, stop_loss_zscore=3,test_percentile=0.25, stationary_pvalue=0.05, display=False):
 
         self.display = display
 
@@ -14,6 +14,7 @@ class PairsTrade:
         self.model_data = model_data
         self.price_data = price_data
         self.clustering = clustering
+        self.stationary_pvalue = stationary_pvalue
 
         self.entry_zscore = entry_zscore
         self.stop_loss_zscore = stop_loss_zscore
@@ -85,7 +86,7 @@ class PairsTrade:
                         adf = adfuller(spread, maxlag=1)
 
 
-                        stationary = True if adf[1] <0.05 else False
+                        stationary = True if adf[1] <self.stationary_pvalue else False
 
                         mean = spread.mean()
                         std = spread.std()
@@ -177,8 +178,9 @@ class PairsTrade:
                                                 ) 
 
         
-
-        condition = (df_contin["is_contin"]==True)#&((df_contin["latest_zscore"]>-3)&(df_contin["latest_zscore"]<3))&((df_contin["latest_zscore"]>2)|(df_contin["latest_zscore"]<-2))
+        # drop all the row where short and long is the same ticker
+        condition = (df_contin["is_contin"]==True)&(df_contin["long"]!=df_contin["short"])#&((df_contin["latest_zscore"]>-3)&(df_contin["latest_zscore"]<3))&((df_contin["latest_zscore"]>2)|(df_contin["latest_zscore"]<-2))
+        
         self.pairs = df_contin.loc[condition] ## only enter to trades that have extreme zscore
 
     def generate_allocation_list(self):

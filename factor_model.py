@@ -2,7 +2,7 @@ import pandas as pd
 
 class FactorModel:
 
-    def __init__(self, df_return, df_factors, ts_pvalues_threshold=1, factor_hard_cap=15, coff_std_limit=3):
+    def __init__(self, df_return, df_factors, ts_pvalues_threshold=0.1, factor_hard_cap=15, coff_std_limit=3):
 
         self._returns = df_return.copy()
         self.factors = df_factors.copy()
@@ -17,10 +17,6 @@ class FactorModel:
 
     def get_ts_factor(self):
         
-        print("""
-Running Time Series Regression......
-                """)
-
         import statsmodels.api as smf
 
         params_list = []
@@ -49,19 +45,19 @@ Running Time Series Regression......
 
         self.ts_pvalues = pd.concat(pvalues_list,axis=0)
 
-        print(F"""
-{len(self.ts_coef)} of ticker's Time Series Factors have been generated.
+#         print(F"""
+# {len(self.ts_coef)} of ticker's Time Series Factors have been generated.
 
------------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-                """
-        )
+#                 """
+#         )
 
     def process_ts_factor(self):
 
-        print("""Postprocessing Factor Data ......
+        # print("""Postprocessing Factor Data ......
         
-        """)
+        # """)
 
         pvalues_std = self.ts_coef.std()
         pvalues_mean = self.ts_coef.mean()
@@ -89,11 +85,20 @@ Running Time Series Regression......
         # set 
         df_para_processed[df_para_processed>self.ts_pvalues_threshold] = 0
 
-        self.factor_cofficients_processed = df_para_processed
+        self.factor_cofficients_processed = df_para_processed.copy()
 
-        self.clustering_coefficients = df_para_processed.iloc[:,2:]
+        df_para_processed = df_para_processed.iloc[:,2:]
 
-        print("Done.")
+        del df_para_processed["RF"]
+
+        self.clustering_coefficients = df_para_processed
+        
+        for col in self.clustering_coefficients.columns:
+            self.clustering_coefficients[col] = (df_para_processed[col] - df_para_processed[col].mean()) / df_para_processed[col].std()
+
+        print(F"    {len(self.clustering_coefficients)} of ticker.")
+
+
             
 
 

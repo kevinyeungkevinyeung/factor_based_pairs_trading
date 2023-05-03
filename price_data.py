@@ -76,7 +76,7 @@ class PriceData:
     
     def get_price_data(self):
 
-        print("Get Price Data from Local Folder")
+        # print("Get Price Data from Local Folder")
 
         list_of_df = []
         for ticker in self.ticker_list:
@@ -105,7 +105,7 @@ class PriceData:
         if self.price is  None:
             self.get_price_data()
 
-        print(F"Generated {'Monthly' if interval=='m' else 'Daily'} Return.")
+        # print(F"Generated {'Monthly' if interval=='m' else 'Daily'} Return.")
 
         df_price = self.price.copy()
 
