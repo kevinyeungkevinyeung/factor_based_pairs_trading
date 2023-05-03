@@ -16,7 +16,7 @@ class Cluster:
         if method == "GMM":
             self.number_of_cluster = self.get_gmm_optimal_k() if number_of_cluster==None else number_of_cluster
             self.run_gmm_clustering()
-        elif method == "DBCSAN":
+        elif method == "DBSCAN":
             self.run_dscan_clustering()
         else:
             self.run_gmm_clustering()
